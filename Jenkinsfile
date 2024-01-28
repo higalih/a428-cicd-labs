@@ -12,15 +12,22 @@ pipeline {
                 sh 'npm install' 
             }
         }
-       stage('Test') {
+        stage('Test') {
             steps {
                 sh './jenkins/scripts/test.sh'
             }
         }
-       stage('Deploy') {
+        stage('Manual Approval') {
+            steps {
+                // Menunggu persetujuan manual
+                input message: 'Lanjutkan ke tahap Deploy?'
+            }
+        }
+        stage('Deploy') {
             steps {
                 sh './jenkins/scripts/deliver.sh'
-                input message: 'Sudah selesai menggunakan React Apps? (Klik "Proceed" untuk mengakhiri)'
+                // User bisa melakukan test App's selama se-menit
+                sh 'sleep 1m'
                 sh './jenkins/scripts/kill.sh'
             }
         }
